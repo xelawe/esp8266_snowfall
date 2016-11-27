@@ -1,4 +1,4 @@
-#define serdebug
+//#define serdebug
 #ifdef serdebug
 #define DebugPrint(...) {  Serial.print(__VA_ARGS__); }
 #define DebugPrintln(...) {  Serial.println(__VA_ARGS__); }
@@ -12,7 +12,7 @@
 #include <Ticker.h>
 
 Ticker TickerLED[8];
-int PinLED[] = {15, 13, 12, 14, 4, 5, 9, 10 };
+int PinLED[] = {15, 13, 12, 14, 4, 5, 2, 16 };
 
 
 void toggleLED(int iv_LEDnbr) {
@@ -26,34 +26,31 @@ void toggleLED(int iv_LEDnbr) {
   DebugPrint(" Pin ");
   DebugPrint(PinLED[iv_LEDnbr]);
   DebugPrint(" Status ");
-  DebugPrintln(lv_LEDstat);
+  DebugPrint(lv_LEDstat);
 
   if (lv_LEDstat == HIGH) {
     digitalWrite(PinLED[iv_LEDnbr], LOW);
     int lv_timeWait = random(2, 30);
-    DebugPrint("LED ");
-    DebugPrint(iv_LEDnbr);
-    DebugPrint(" Wait ");
-    DebugPrintln(lv_timeWait);
+    DebugPrint(" --> 0, ");
+    DebugPrint(lv_timeWait);
     TickerLED[iv_LEDnbr].attach( lv_timeWait, toggleLED, iv_LEDnbr);
   } else {
     digitalWrite(PinLED[iv_LEDnbr], HIGH);
-    DebugPrint("LED ");
-    DebugPrint(iv_LEDnbr);
-    DebugPrint(" On ");
-    DebugPrintln(1);
+    DebugPrint(" --> 1, ");
+    DebugPrint(1);
     TickerLED[iv_LEDnbr].attach(1, toggleLED, iv_LEDnbr);
   }
-
+  DebugPrintln(" ");
 }
 
 void init_LED() {
-  for (int i = 0; i < 6; i++) {
+  for (int i = 0; i < 8; i++) {
     DebugPrint("LED ");
     DebugPrintln(i);
     pinMode(PinLED[i], OUTPUT);
-    digitalWrite(PinLED[i], HIGH);
-    TickerLED[i].attach(1, toggleLED, i);
+    //digitalWrite(PinLED[i], HIGH);
+    //TickerLED[i].attach(1, toggleLED, i);
+    toggleLED(i);
     delay(50);
   }
 }
