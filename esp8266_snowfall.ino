@@ -1,15 +1,12 @@
-//#define serdebug
-#ifdef serdebug
-#define DebugPrint(...) {  Serial.print(__VA_ARGS__); }
-#define DebugPrintln(...) {  Serial.println(__VA_ARGS__); }
-#else
-#define DebugPrint(...) { }
-#define DebugPrintln(...) { }
-#endif
+#include <cy_serdebug.h>
+#include <cy_serial.h>
 
-#include "tools_wifi.h"
-#include "ota_tool.h"
+const char *gc_hostname = "SnowFall";
+
+#include "cy_wifi.h"
+#include "cy_ota.h"
 #include <Ticker.h>
+
 
 Ticker TickerLED[8];
 int PinLED[] = {15, 13, 12, 14, 4, 5, 2, 16 };
@@ -48,22 +45,17 @@ void init_LED() {
     DebugPrint("LED ");
     DebugPrintln(i);
     pinMode(PinLED[i], OUTPUT);
-    //digitalWrite(PinLED[i], HIGH);
-    //TickerLED[i].attach(1, toggleLED, i);
     toggleLED(i);
     delay(50);
   }
 }
 
 void setup() {
-  // put your setup code here, to run once:
-#ifdef serdebug
-  Serial.begin(115200);
-#endif
+  cy_serial::start(__FILE__);
 
-  wifi_init("NightLight");
+  wifi_init(gc_hostname);
 
-  init_ota("SnowFall");
+  init_ota(gv_clientname);
 
   init_LED();
 }
